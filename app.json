@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.Parkie"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +26,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsImpl": "mapbox",
+          "RNMapboxMapsDownloadToken": "pk.eyJ1IjoicmFpaGFueXVzcmkiLCJhIjoiY2xmNTd6aXkzMHRmdzNzbzF5dWZhdGp6bCJ9.RhDQndGiFMWnzoDGYgynkw"
+        }
+      ]
+    ]
   }
 }
