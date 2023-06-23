@@ -1,6 +1,7 @@
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useState, useRef } from 'react';
 import { SearchBar } from 'react-native-elements';
+import {Text, View, Keyboard } from 'react-native';
 import LocationInfo from './LocationInfo';
 import { ListItem } from "@react-native-material/core";
 
@@ -11,16 +12,8 @@ const Mapbox = (props) => {
     const [suggestions, setSuggestions] = useState([]);
     const [lat, setLat] = useState(1.290270);
     const [longv, setLongv] = useState(103.851959);
+    const [searching, setSearching] = useState(false);
     const mapRef = useRef()
-    
-    const markerClicked = (data) => {
-      setDataSelected(data);
-      setLat(parseFloat(data.Location.split(" ")[0]));
-      setLongv(parseFloat(data.Location.split(" ")[1]));
-      let x = parseFloat(data.Location.split(" ")[0]);
-      let y = parseFloat(data.Location.split(" ")[1]);
-      respositonMap(x,y);
-    }
 
     const repositionMap = (x, y) => {
       mapRef?.current?.animateCamera({
@@ -30,11 +23,20 @@ const Mapbox = (props) => {
         }
       });
     }
+    
+    const markerClicked = (data) => {
+      setDataSelected(data);
+      setLat(parseFloat(data.Location.split(" ")[0]));
+      setLongv(parseFloat(data.Location.split(" ")[1]));
+      let x = parseFloat(data.Location.split(" ")[0]);
+      let y = parseFloat(data.Location.split(" ")[1]);
+      repositionMap(x,y);
+    }
 
     const updateSearch = (search) => {
       setSearch(search);
       if (search.length > 0) {
-        setSuggestions(props.devs.filter(dev => dev.toLowerCase().indexOf(search.toLowerCase()) > -1).splice(0,5));
+        setSuggestions(props.devs.filter(dev => dev.toLowerCase().indexOf(search.toLowerCase()) > -1).splice(0,10));
       } else {
         setSuggestions("");
       }
@@ -49,6 +51,9 @@ const Mapbox = (props) => {
       let x = parseFloat(searchedData[0].Location.split(" ")[0]);
       let y = parseFloat(searchedData[0].Location.split(" ")[1])
       repositionMap(x,y);
+      setSuggestions("")
+      setSearching(false)
+      Keyboard.dismiss()
     }
 
     function toTitleCase(str) {
@@ -66,34 +71,46 @@ const Mapbox = (props) => {
 
     return (
       <>
+      {searching ? 
+      <Text 
+        onPress={() => {setSearching(false); Keyboard.dismiss()}}
+        style={{ marginLeft: 15, marginTop: 10, fontSize: 18, color: '#1E90FF', textDecorationLine: 'underline'}}
+        >Back
+      </Text> : <></>}
       <SearchBar
-        placeholder="Type Here..."
+        style={{ fontSize: 16 }}
+        placeholder="Enter location here"
         onChangeText={updateSearch}
+        onPressIn={()=>setSearching(true)}
         value={search}
-        lightTheme={true}
-        placeholderTextColor="grey"
-        color="black"
+        inputStyle={{backgroundColor: 'white'}}
+        containerStyle={{backgroundColor: 'transparent', border: 'none', borderBottomColor: 'transparent', borderTopColor: 'transparent' }}
+        inputContainerStyle={{backgroundColor: 'white',  borderWidth: 1, borderBottomWidth: 1, borderRadius: 23 }}
+        placeholderTextColor={'#g5g5g5'}
+        showCancel
       />
-      {suggestions.length > 0 ? suggestions.map((sug,i)=> 
-      <ListItem button
-        key={i} 
-        title={toTitleCase(sug)}
-        onPress={() => handlePress(sug)}
-        >
-      </ListItem>) : ""}
+      {searching ? 
+      <View>
+        {suggestions.length > 0 ? suggestions.map((sug,i)=> 
+        <ListItem button
+          key={i} 
+          title={toTitleCase(sug)}
+          onPress={() => handlePress(sug)}
+          >
+        </ListItem>) : ""}
+      </View> : 
+      <View>
         <MapView
-        style={{ flex: 1 }}
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
         showsUserLocation={true}
         followUserLocation={true}
-        onUserLocationChange={event => console.log(event.nativeEvent)}
         initialRegion={{
           latitude: lat,
           longitude: longv,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421}}
-        style={{ height: '35%'}}
+          style={{ height: '65%'}}
       >
       {props.data.map((data,i) => 
       <Marker key={i}
@@ -104,7 +121,10 @@ const Mapbox = (props) => {
         onPress={() => markerClicked(data)}
       />)} 
     </MapView>
-    <LocationInfo key={dataSelected.CarParkID} data={dataSelected}/>
+    <LocationInfo 
+      key={dataSelected.CarParkID} 
+      data={dataSelected}/>    
+    </View>}
     </>
     )
 }
