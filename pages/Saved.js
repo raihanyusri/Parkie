@@ -73,7 +73,7 @@ export default function Saved(props) {
                         onPress={() => {removeData(locationSaved)}}>Remove</Text>
                     </View>
                 </View>)}
-                {saved.length === 0 ? 
+                {saved && saved?.length === 0 ? 
                 <View style={{ alignItems: 'center' }}>
                     <Text>You have no locations saved</Text>
                 </View> 
