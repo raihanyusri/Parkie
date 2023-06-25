@@ -62,7 +62,7 @@ export default function Saved(props) {
             refreshControl={<RefreshControl onRefresh={getData} />}>
             <View style={{ marginTop: 20 }}>
                 {saved?.map(locationSaved => 
-                <View style={styles.mainCardView}>
+                <View key={locationSaved} style={styles.mainCardView}>
                     <Text style={{ fontSize: 18, fontWeight: '500' }}>{toTitleCase(locationSaved)}</Text>
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent:'space-evenly'}}>
                     <Text style={{ paddingTop: 5, fontSize: 16, fontWeight: '700', color: (getLotsForLocation(locationSaved) < 15 ? "red" : getLotsForLocation(locationSaved) < 50 ? "orange" : "green")}}>
@@ -73,6 +73,11 @@ export default function Saved(props) {
                         onPress={() => {removeData(locationSaved)}}>Remove</Text>
                     </View>
                 </View>)}
+                {saved.length === 0 ? 
+                <View style={{ alignItems: 'center' }}>
+                    <Text>You have no locations saved</Text>
+                </View> 
+                : <></>}
             </View>
         </ScrollView>
     )

@@ -1,7 +1,7 @@
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useState, useRef } from 'react';
 import { SearchBar } from 'react-native-elements';
-import {Text, View, Keyboard } from 'react-native';
+import {Text, View, Keyboard, ScrollView } from 'react-native';
 import LocationInfo from './LocationInfo';
 import { ListItem } from "@react-native-material/core";
 
@@ -71,60 +71,62 @@ const Mapbox = (props) => {
 
     return (
       <>
-      {searching ? 
-      <Text 
-        onPress={() => {setSearching(false); Keyboard.dismiss()}}
-        style={{ marginLeft: 15, marginTop: 10, fontSize: 18, color: '#1E90FF', textDecorationLine: 'underline'}}
-        >Back
-      </Text> : <></>}
-      <SearchBar
-        style={{ fontSize: 16 }}
-        placeholder="Enter location here"
-        onChangeText={updateSearch}
-        onPressIn={()=>setSearching(true)}
-        value={search}
-        inputStyle={{backgroundColor: 'white'}}
-        containerStyle={{backgroundColor: 'transparent', border: 'none', borderBottomColor: 'transparent', borderTopColor: 'transparent' }}
-        inputContainerStyle={{backgroundColor: 'white',  borderWidth: 1, borderBottomWidth: 1, borderRadius: 23 }}
-        placeholderTextColor={'#g5g5g5'}
-        showCancel
-      />
-      {searching ? 
-      <View>
-        {suggestions.length > 0 ? suggestions.map((sug,i)=> 
-        <ListItem button
-          key={i} 
-          title={toTitleCase(sug)}
-          onPress={() => handlePress(sug)}
-          >
-        </ListItem>) : ""}
-      </View> : 
-      <View>
+        {searching ? 
+        <Text 
+          onPress={() => {setSearching(false); Keyboard.dismiss()}}
+          style={{ marginLeft: 15, marginTop: 10, fontSize: 18, color: '#1E90FF', textDecorationLine: 'underline'}}
+          >Back
+        </Text> : <></>}
+        <SearchBar
+          style={{ fontSize: 16 }}
+          placeholder="Enter location here"
+          onChangeText={updateSearch}
+          onPressIn={()=>setSearching(true)}
+          value={search}
+          inputStyle={{backgroundColor: 'white'}}
+          containerStyle={{backgroundColor: 'transparent', border: 'none', borderBottomColor: 'transparent', borderTopColor: 'transparent' }}
+          inputContainerStyle={{backgroundColor: 'white',  borderWidth: 1, borderBottomWidth: 1, borderRadius: 23 }}
+          placeholderTextColor={'#g5g5g5'}
+          showCancel
+        />
+        <ScrollView>
+        {searching ? 
+        <View>
+          {suggestions.length > 0 ? suggestions.map((sug,i)=> 
+          <ListItem button
+            key={i} 
+            title={toTitleCase(sug)}
+            onPress={() => handlePress(sug)}
+            >
+          </ListItem>) : ""}
+        </View> : 
+        <View>
         <MapView
-        ref={mapRef}
-        provider={PROVIDER_GOOGLE}
-        showsUserLocation={true}
-        followUserLocation={true}
-        initialRegion={{
-          latitude: lat,
-          longitude: longv,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421}}
-          style={{ height: '65%'}}
-      >
-      {props.data.map((data,i) => 
-      <Marker key={i}
-        coordinate={{
-          latitude: parseFloat(data.Location.split(" ")[0]),
-          longitude: parseFloat(data.Location.split(" ")[1])
-        }}
-        onPress={() => markerClicked(data)}
-      />)} 
-    </MapView>
-    <LocationInfo 
-      key={dataSelected.CarParkID} 
-      data={dataSelected}/>    
-    </View>}
+          ref={mapRef}
+          provider={PROVIDER_GOOGLE}
+          showsUserLocation={true}
+          followUserLocation={true}
+          initialRegion={{
+            latitude: lat,
+            longitude: longv,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421}}
+            style={{ height: '100%'}}
+          >
+        {props.data.map((data,i) => 
+          <Marker key={i}
+            coordinate={{
+              latitude: parseFloat(data.Location.split(" ")[0]),
+              longitude: parseFloat(data.Location.split(" ")[1])
+            }}
+            onPress={() => markerClicked(data)}
+          />)} 
+        </MapView>
+        <LocationInfo 
+          key={dataSelected.CarParkID} 
+          data={dataSelected}/>    
+        </View>}
+      </ScrollView>
     </>
     )
 }
