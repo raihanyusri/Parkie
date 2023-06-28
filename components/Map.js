@@ -89,7 +89,7 @@ const Mapbox = (props) => {
           placeholderTextColor={'#g5g5g5'}
           showCancel
         />
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ flex: 1 }}>
         {searching ? 
         <View>
           {suggestions.length > 0 ? suggestions.map((sug,i)=> 
@@ -111,7 +111,7 @@ const Mapbox = (props) => {
             longitude: longv,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421}}
-            style={{ height: '100%'}}
+            style={{ height: '60%'}}
           >
         {props.data.map((data,i) => 
           <Marker key={i}

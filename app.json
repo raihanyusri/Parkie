@@ -27,14 +27,10 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      [
-        "@rnmapbox/maps",
-        {
-          "RNMapboxMapsImpl": "mapbox",
-          "RNMapboxMapsDownloadToken": "pk.eyJ1IjoicmFpaGFueXVzcmkiLCJhIjoiY2xmNTd6aXkzMHRmdzNzbzF5dWZhdGp6bCJ9.RhDQndGiFMWnzoDGYgynkw"
-        }
-      ]
-    ]
+    "extra": {
+      "eas": {
+        "projectId": "f415594b-cb87-4897-8d3c-8d2543a4eec4"
+      }
+    }
   }
 }
